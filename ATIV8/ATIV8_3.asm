@@ -1,0 +1,28 @@
+TITLE Entrada de números hexadecimais
+.MODEL SMALL
+.STACK 100h
+.CODE
+MAIN PROC
+    XOR BX,BX
+    MOV CL,4
+    MOV AH,1
+    INT 21H
+TOPO:
+    CMP AL,0DH
+    JE FIM
+    CMP AL,39H
+    JG LETRA 
+    AND AL,0FH
+    JMP DESLOCA
+LETRA:
+    SUB AL,37H
+DESLOCA:
+    SHL BX,CL
+    OR BL,AL
+    INT 21H
+    JMP TOPO
+FIM:
+    MOV AH,4CH
+    INT 21H
+MAIN ENDP
+END MAIN
