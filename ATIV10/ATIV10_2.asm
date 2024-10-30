@@ -1,7 +1,7 @@
 TITLE PROGRAMA DE SOMA DE MATRIZES
 .MODEL SMALL
 .STACK 100h
-Proximalinha macro
+Proximalinha macro ;pula linha sem alterar os valores de AX e DX
     PUSH AX
     PUSH DX 
     MOV AH,2
@@ -15,89 +15,81 @@ Proximalinha macro
 endm
 .DATA
     MATRIZ4X4 DB 1,2,3,4
-              DB 4,3,2,1
-              DB 5,6,1,2
-              DB 3,4,5,6
-    MSG1 DB "A matriz é:$"
-    MSG2 DB "A soma dos elementos é:$"
+              DB 1,2,3,4
+              DB 1,2,3,4
+              DB 1,2,3,4
+    MSG1 DB "Matriz: $"
+    MSG2 DB "Soma dos elementos = $"
 .CODE
 MAIN PROC
-    MOV AX,@DATA
+    MOV AX,@DATA ;permite acesso as variáveis de .DATA
     MOV DS,AX
-    call ler
     call IMPRIME
     call soma
-    MOV AH,4Ch 
+    MOV AH,4Ch ;finaliza o código
     INT 21h
 main endp
 
-ler PROC 
-    XOR BX,BX
-poggers:
-    XOR SI,SI
-    MOV CX,4
-linha:
-    MOV AL,MATRIZ4X4[BX+SI]
-    INT 21h
-    INC SI
-    LOOP linha
-    Proximalinha
-    ADD BX,4
-    CMP BX,16
-    JNE poggers
-    RET
-ler endp
-
 IMPRIME PROC 
-    XOR BX,BX
+    MOV AH,9 ;imprime "MSG1"
+    LEA DX,MSG1
+    INT 21h
+    Proximalinha ;pula linha
+    XOR BX,BX ;zera o registrador para apontar para o primeiro valor da matriz
+    XOR DX,DX
 poggers1:
-    XOR SI,SI
-    MOV CX,4
+    XOR SI,SI ;zera o registrador para apontar para o primeiro valor da matriz
+    MOV CX,4 ;define a quantidade de loops (de acordo com o tamanho da matriz)
     MOV AH,2
 linha1:
-    MOV AL,MATRIZ4X4[BX+SI]
-    MOV DL,AL
-    OR DL,30h
-    INT 21h
-    INC SI
-    LOOP linha1
-    Proximalinha
-    ADD BX,4
-    CMP BX,16
+    MOV DL,MATRIZ4X4[BX+SI] ;envia o valor correspondente da matriz para DL
+    OR DL,30h ;transforma em número
+    INT 21h ;imprime o valor
+    INC SI ;incrementa SI, para mudar de coluna
+    LOOP linha1 ;repete até imprimir todos da linha
+    Proximalinha ;pula linha
+    ADD BX,4 ;adiciona 4 a BX para quando imprimir todos os 16 eleentos da matriz finalizar o código
+    CMP BX,16 ;enquanto não der 16 repete o código
     JNE poggers1
-    RET
+    RET ;retorna para o código principal
 IMPRIME ENDP
 
 SOMA PROC  
     Proximalinha
-    XOR BX,BX
+    XOR BX,BX ;zera o registrador para apontar para o primeiro valor da matriz
+    XOR DX,DX ;zera o registrador 
 poggers2:
-    XOR SI,SI
-    MOV CX,4
+    XOR SI,SI ;zera o registrador para apontar para o primeiro valor da matriz
+    MOV CX,4 ;define a quantidade de loops (de acordo com o tamanho da matriz)
 linha2:
-    ADD AL,MATRIZ4X4[BX+SI]
-    OR DL,30h
-    INC SI
-    LOOP linha2
-    ADD BX,4
-    CMP BX,16
+    ADD DL,MATRIZ4X4[BX+SI] ;acidiona o valor correspondente em DL
+    INC SI ;incrementa SI, para mudar de coluna
+    LOOP linha2 ;repete até imprimir todos da linha
+    ADD BX,4 ;adiciona 4 a BX para quando imprimir todos os 16 eleentos da matriz finalizar o código
+    CMP BX,16 ;enquanto não der 16 repete o código
     JNE poggers2
-    
-    
-    MOV BX,10
-    XOR CX,CX
-poggers3:
-    DIV BX   
-    PUSH DX
-    INC CX
-    CMP AL,0
-    JNE poggers3
-    MOV AH,2
-poggers4:
-    POP DX
-    OR DL,30h
+    PUSH DX ;empilha o valor da soma
+    MOV AH,9 ;imprime "MSG2"
+    LEA DX,MSG2
     INT 21h
+    POP DX ;recupera o valor anterior na pilha
+    MOV AX,DX ;manda o valor para AX
+    XOR DX,DX ;zera o registrador
+    MOV BX,10 ;manda 10 para BX
+    XOR CX,CX ;zera o contador
+poggers3:
+    DIV BX ;divide AX por BX
+    PUSH DX ;guarda o resto na pilha 
+    INC CX ; guarda quantas vezes carregou a pilha
+    CMP AL,0 ;compara o resultado com 0, se não for igual continua dividindo
+    JNE poggers3
+    MOV AH,2 ;quando for igual chama a impressão
+poggers4:
+    POP DX ;puxa o valor guardado na pilha
+    OR DL,30h ;transforma número
+    INT 21h ;imprime o valor até sair tudo guardado da pilha
     LOOP poggers4
+    RET ;retorna para o código principal
 SOMA endp
 END MAIN
     
