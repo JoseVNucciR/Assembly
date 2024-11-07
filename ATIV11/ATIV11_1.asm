@@ -29,9 +29,11 @@ MAIN PROC
     MOV AH,9
     LEA DX,MSG1
     INT 21H
+    
 
     MOV AH,1
     INT 21H
+    AND AL,0Fh
     CMP AL,1
     JE dec1
     CMP AL,2
@@ -56,6 +58,7 @@ saida:
 
     MOV AH,1
     INT 21H
+    AND AL,0Fh
     CMP AL,1
     JE dec11
     CMP AL,2
@@ -151,7 +154,8 @@ saidadecimal PROC
     PUSH BX
     PUSH CX
     PUSH DX
-
+    
+    PUSH AX
     MOV AH,9
     LEA DX,MSG4
     INT 21H 
