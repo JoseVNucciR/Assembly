@@ -56,25 +56,27 @@ saida:
 
     MOV AH,1
     INT 21H
-    MOV BL,AL
-    POP AX
-    CMP BL,1
+    CMP AL,1
     JE dec11
-    CMP BL,2
+    CMP AL,2
     JE bin22
-    CMP BL,3
+    CMP AL,3
     JE hex33
 
 dec11:
-    CALL saidabinario
-    JMP FEIN
-bin22:
+    POP AX
     CALL saidadecimal
     JMP FEIN
+bin22:
+    POP AX
+    CALL saidabinario
+    JMP FEIN
 hex33:
+    POP AX
     CALL saidahexadecimal
-FIM:
-    
+FEIN:
+    MOV AH,4Ch
+    INT 21h
 MAIN ENDP
 
 entradadecimal proc 
@@ -144,10 +146,16 @@ sai:
     RET  
 entradadecimal ENDP
 saidadecimal PROC
+    Proximalinha
     PUSH AX
     PUSH BX
     PUSH CX
     PUSH DX
+
+    MOV AH,9
+    LEA DX,MSG4
+    INT 21H 
+    POP AX
 
     OR AX,AX      
     JGE maior
@@ -196,18 +204,25 @@ entradabinario PROC
 ;while
 TOPOO:
     CMP AL,0DH
-    JE FIM
+    JE FIMMMM
     AND AL,0FH
     SHL BX,1
     OR BL,AL
     INT 21h
     LOOP TOPOO
 ;end_while
-FIM:
+FIMMMM:
     RET
 entradabinario ENDP
 saidabinario PROC
-    MOV BX,1
+    PUSH AX
+    Proximalinha
+    MOV AH,9
+    LEA DX,MSG4
+    INT 21H 
+    POP AX
+
+    MOV BX,AX
     MOV CX,16
     MOV AH,2
 abra:
@@ -251,6 +266,14 @@ FIMM:
     RET
 entradahexadecimal ENDP
 saidahexadecimal PROC
+    PUSH AX
+    Proximalinha
+    MOV AH,9
+    LEA DX,MSG4
+    INT 21H 
+    POP AX
+
+    MOV BX,AX
     MOV CH,4
     MOV CL,4
     MOV AH,2
