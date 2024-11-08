@@ -23,15 +23,15 @@ endm
 
 .CODE
 MAIN PROC
-    MOV AX,@DATA
+    MOV AX,@DATA ;permite acessso a DATA
     MOV DS,AX
 
-    MOV AH,9
+    MOV AH,9 ;imprime mensagem 1
     LEA DX,MSG1
     INT 21H
     
 
-    MOV AH,1
+    MOV AH,1 ;pede um número e decide qual tipo de numero quer entrar
     INT 21H
     AND AL,0Fh
     CMP AL,1
@@ -51,12 +51,12 @@ hex3:
     CALL entradahexadecimal
 
 saida:
-    PUSH AX
+    PUSH AX ;guarda AX e exibe mensagem 3
     MOV AH,9
     LEA DX,MSG3
     INT 21H
 
-    MOV AH,1
+    MOV AH,1 ;pede um numero e decide qual tipo de numero quer sair
     INT 21H
     AND AL,0Fh
     CMP AL,1
@@ -67,7 +67,7 @@ saida:
     JE hex33
 
 dec11:
-    POP AX
+    POP AX ;volta o valor de AX
     CALL saidadecimal
     JMP FEIN
 bin22:
@@ -88,7 +88,7 @@ entradadecimal proc
     PUSH DX
 topo:
     Proximalinha
-    MOV AH,9
+    MOV AH,9 ;exibe mensasgem 2
     LEA DX,MSG2
     INT 21H  
     
@@ -157,7 +157,7 @@ saidadecimal PROC
     
     PUSH AX
     MOV AH,9
-    LEA DX,MSG4
+    LEA DX,MSG4 ;exibe mensasgem 4
     INT 21H 
     POP AX
 
@@ -197,7 +197,7 @@ looping:
 saidadecimal ENDP
 entradabinario PROC
     Proximalinha
-    MOV AH,9
+    MOV AH,9 ;exibe mensasgem 2
     LEA DX,MSG2
     INT 21H  
 
@@ -221,7 +221,7 @@ entradabinario ENDP
 saidabinario PROC
     PUSH AX
     Proximalinha
-    MOV AH,9
+    MOV AH,9 ;exibe mensasgem 4
     LEA DX,MSG4
     INT 21H 
     POP AX
@@ -244,7 +244,7 @@ charmander:
 saidabinario ENDP
 entradahexadecimal PROC
     Proximalinha
-    MOV AH,9
+    MOV AH,9 ;exibe mensasgem 2
     LEA DX,MSG2
     INT 21H 
 
@@ -272,7 +272,7 @@ entradahexadecimal ENDP
 saidahexadecimal PROC
     PUSH AX
     Proximalinha
-    MOV AH,9
+    MOV AH,9 ;exibe mensasgem 4
     LEA DX,MSG4
     INT 21H 
     POP AX
